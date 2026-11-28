@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useRecipes } from '../context/RecipeContext';
 import { isIngredientMatch } from '../utils/matchingEngine';
@@ -41,6 +41,12 @@ export default function RecipeDetails() {
   const [servings, setServings] = useState(recipe ? recipe.servings : 4);
   const [cookModeOpen, setCookModeOpen] = useState(false);
   const [toastMessage, setToastFeedback] = useState('');
+  // Reset recipe-specific state when navigating to another recipe
+useEffect(() => {
+  setServings(recipe ? recipe.servings : 4);
+  setCookModeOpen(false);
+  setToastFeedback('');
+}, [id, recipe?.servings]);
 
   if (!recipe) {
     return (
