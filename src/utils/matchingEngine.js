@@ -43,6 +43,7 @@ export function normalizeIngredient(name) {
     'shrimps': 'shrimp',
     'prawns': 'shrimp',
     'prawn': 'shrimp',
+    'prawns shrimp': 'shrimp',
     'cottage cheese': 'paneer',
     'atta': 'wheat flour',
     'all purpose flour': 'flour',
@@ -54,14 +55,14 @@ export function normalizeIngredient(name) {
     return aliases[normalized];
   }
 
-  // Basic plural stripping if ends with 's' and not ending with 'ss'
-  if (normalized.endsWith('s') && !normalized.endsWith('ss') && normalized.length > 3) {
-    const singular = normalized.slice(0, -1);
-    if (aliases[singular]) return aliases[singular];
-  }
-
   return normalized;
 }
+
+// These describe a cut or form of the same pantry ingredient. Arbitrary word
+// containment is unsafe: for example, "oil" must not satisfy "olive oil".
+const compatibleIngredientForms = new Set([
+  'chicken|chicken breast'
+]);
 
 /**
  * Checks if a user's selected ingredient matches a recipe required ingredient
@@ -75,12 +76,8 @@ export function isIngredientMatch(userIngredient, recipeIngredient) {
   // Exact match
   if (normUser === normRecipe) return true;
 
-  // Word substring containment (e.g. "chicken" matches "chicken breast", "rice" matches "basmati rice")
-  if (normRecipe.includes(normUser) || normUser.includes(normRecipe)) {
-    return true;
-  }
-
-  return false;
+  return compatibleIngredientForms.has(`${normUser}|${normRecipe}`) ||
+    compatibleIngredientForms.has(`${normRecipe}|${normUser}`);
 }
 
 /**
@@ -89,7 +86,9 @@ export function isIngredientMatch(userIngredient, recipeIngredient) {
  * Match Percentage = (Number of Available Required Ingredients / Total Required Ingredients) * 100
  */
 export function calculateRecipeMatch(recipe, selectedIngredients = []) {
-  const totalRequired = recipe.ingredients.length;
+  const requiredIngredients = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
+  const pantryIngredients = Array.isArray(selectedIngredients) ? selectedIngredients : [];
+  const totalRequired = requiredIngredients.length;
   if (!totalRequired) {
     return {
       matchPercentage: 0,
@@ -103,11 +102,11 @@ export function calculateRecipeMatch(recipe, selectedIngredients = []) {
   }
 
   // If user hasn't selected any ingredients yet, treat as 0% match but show all required
-  if (!selectedIngredients || selectedIngredients.length === 0) {
+  if (pantryIngredients.length === 0) {
     return {
       matchPercentage: 0,
       availableIngredients: [],
-      missingIngredients: [...recipe.ingredients],
+      missingIngredients: [...requiredIngredients],
       totalRequired,
       availableCount: 0,
       missingCount: totalRequired,
@@ -118,8 +117,8 @@ export function calculateRecipeMatch(recipe, selectedIngredients = []) {
   const availableIngredients = [];
   const missingIngredients = [];
 
-  recipe.ingredients.forEach((recipeIng) => {
-    const isAvailable = selectedIngredients.some((userIng) =>
+  requiredIngredients.forEach((recipeIng) => {
+    const isAvailable = pantryIngredients.some((userIng) =>
       isIngredientMatch(userIng, recipeIng)
     );
 
