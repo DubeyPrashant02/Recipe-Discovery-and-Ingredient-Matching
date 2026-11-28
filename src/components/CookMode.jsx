@@ -17,8 +17,12 @@ export default function CookMode({ recipe, onClose }) {
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
 
-  const totalSteps = recipe.instructions.length;
-  const progressPercent = Math.round(((currentStep + 1) / totalSteps) * 100);
+  const totalSteps = recipe?.instructions?.length || 0;
+
+const progressPercent =
+  totalSteps === 0
+    ? 0
+    : Math.round(((currentStep + 1) / totalSteps) * 100);
 
   // Keyboard navigation support: Left / Right arrows
   useEffect(() => {
