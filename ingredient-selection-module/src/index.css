@@ -1,0 +1,156 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f6ed;
+    color: #34452b;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.pantry, .browser {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px #00000008;
+}
+
+input {
+    padding: 13px;
+    border: 1px solid #d5ddce;
+    border-radius: 8px;
+    font-size: 15px;
+    width: 100%;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.custom-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.custom-form button, .recipe-btn {
+    background: #526b3e;
+    color: white;
+}
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 22px 0;
+}
+
+.categories button {
+    background: #edf0e7;
+    color: #34452b;
+}
+
+.categories button.active {
+    background: #526b3e;
+    color: white;
+}
+
+.ingredient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 14px;
+}
+
+.ingredient {
+    background: #f9faf6;
+    border: 2px solid #e3e8db;
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    transition: 0.2s;
+    color: #34452b;
+}
+
+.ingredient:hover {
+    transform: translateY(-3px);
+    border-color: #77945d;
+}
+
+.ingredient.selected {
+    background: #e2efd5;
+    border-color: #77945d;
+}
+
+.emoji {
+    font-size: 32px;
+}
+
+.ingredient small {
+    color: #777;
+}
+
+.selected-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.chip {
+    background: #e2efd5;
+    color: #34452b;
+    border-radius: 20px;
+}
+
+.clear-btn {
+    background: #fbe9e9;
+    color: #b83232;
+}
+
+.recipe-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 15px;
+    }
+}
